@@ -20,36 +20,26 @@ export default function Home() {
   const [isDraggingVertical, setIsDraggingVertical] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const rightPaneRef = useRef<HTMLDivElement>(null);
-  const [pythonCode, setPythonCode] = useState(`# Example: Competitive Programming Style Input
-# First line contains the number of test cases
-# Followed by the contents of each test file
+  const [pythonCode, setPythonCode] = useState(`# Example: Simple Learning Code
+# This code reads input and produces output for one test case
 
-def solve_test_case():
-    # Read input for one test case
-    # This example assumes the input format from the variable declaration problem
-    integer_val = int(input())
-    string_val = input()
-    boolean_val = input()
-    float_val = float(input())
-    char_val = input()
-    updated_int = int(input())
-    late_init = input()
-    
-    # Process and output results
-    print(f"Integer variable: {integer_val}")
-    print(f"String variable: {string_val}")
-    print(f"Boolean variable: {boolean_val}")
-    print(f"Float variable: {float_val}")
-    print(f"Character variable: {char_val}")
-    print(f"Updated integer variable: {updated_int}")
-    print(f"Late-initialized variable: {late_init}")
+# Read input values
+integer_val = int(input())
+string_val = input()
+boolean_val = input()
+float_val = float(input())
+char_val = input()
+updated_int = int(input())
+late_init = input()
 
-# Read number of test cases
-T = int(input())
-
-# Process each test case
-for _ in range(T):
-    solve_test_case()`);
+# Process and output results
+print(f"Integer variable: {integer_val}")
+print(f"String variable: {string_val}")
+print(f"Boolean variable: {boolean_val}")
+print(f"Float variable: {float_val}")
+print(f"Character variable: {char_val}")
+print(f"Updated integer variable: {updated_int}")
+print(f"Late-initialized variable: {late_init}")`);
   const [output, setOutput] = useState('');
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [isRunning, setIsRunning] = useState(false);
@@ -158,117 +148,72 @@ for _ in range(T):
     setOutput('');
 
     try {
-      // Run test cases and capture their output
+      // Run each test case individually for better learning feedback
       const results: TestResult[] = [];
+      const allOutputs: string[] = [];
       
-      // Prepare all input files first
-      const inputFiles: string[] = [];
-      for (const testCase of currentQuestion.testCases) {
+      for (let i = 0; i < currentQuestion.testCases.length; i++) {
+        const testCase = currentQuestion.testCases[i];
         try {
-          const inputResponse = await fetch(testCase.inputFile);
-          if (!inputResponse.ok) {
-            throw new Error(`Failed to load input file: ${testCase.inputFile}`);
+          // Fetch input and expected files for this test case
+          const [inputResponse, expectedResponse] = await Promise.all([
+            fetch(testCase.inputFile),
+            fetch(testCase.expectedFile)
+          ]);
+          
+          if (!inputResponse.ok || !expectedResponse.ok) {
+            throw new Error(`Failed to load test files: ${testCase.inputFile}`);
           }
+          
           const inputText = await inputResponse.text();
-          inputFiles.push(inputText);
-        } catch (error) {
-          results.push({
-            testCase: testCase.description,
-            expected: 'Error loading test case',
-            actual: `Error: ${error}`,
-            passed: false
-          });
-        }
-      }
-
-      if (inputFiles.length === 0) {
-        setOutput('No test cases available');
-        setTestResults([]);
-        return;
-      }
-
-      // Create competitive programming style input
-      // First line: number of test cases
-      // Followed by: contents of each test file
-      const combinedInput = `${inputFiles.length}\n${inputFiles.join('\n')}`;
-      
-      console.log('Combined input for competitive programming style:', combinedInput);
-      
-      // Set up stdin/stdout redirection with the combined input
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (pyodide as any).runPythonAsync(`
+          const expectedText = await expectedResponse.text();
+          
+          // Set up stdin/stdout redirection for this specific test case
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (pyodide as any).runPythonAsync(`
 import sys
 from io import StringIO
 sys._stdin = sys.stdin
 sys._stdout = sys.stdout
-sys.stdin = StringIO('''${combinedInput}''')
+sys.stdin = StringIO('''${inputText}''')
 sys.stdout = StringIO()
 `);
-      
-      // Run the user's code
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (pyodide as any).runPythonAsync(pythonCode);
-      
-      // Get the output
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const actualOutput = await (pyodide as any).runPythonAsync('sys.stdout.getvalue()');
-      
-      // Restore stdin/stdout
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (pyodide as any).runPythonAsync('sys.stdin = sys._stdin; sys.stdout = sys._stdout');
-      
-      // Get the actual output
-      const actual = actualOutput ? actualOutput.trim().replace(/\r\n/g, '\n') : '';
-      
-      // Now compare with each expected output
-      for (let i = 0; i < currentQuestion.testCases.length; i++) {
-        const testCase = currentQuestion.testCases[i];
-        try {
-          const expectedResponse = await fetch(testCase.expectedFile);
-          if (!expectedResponse.ok) {
-            throw new Error(`Failed to load expected file: ${testCase.expectedFile}`);
-          }
           
-          const expectedText = await expectedResponse.text();
+          // Run the user's code
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (pyodide as any).runPythonAsync(pythonCode);
+          
+          // Get the output for this test case
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const actualOutput = await (pyodide as any).runPythonAsync('sys.stdout.getvalue()');
+          
+          // Restore stdin/stdout
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          await (pyodide as any).runPythonAsync('sys.stdin = sys._stdin; sys.stdout = sys._stdout');
+          
+          // Normalize outputs (trim whitespace, normalize line endings)
+          const actual = actualOutput ? actualOutput.trim().replace(/\r\n/g, '\n') : '';
           const expected = expectedText.trim().replace(/\r\n/g, '\n');
           
-          // For competitive programming style, the output should contain results for all test cases
-          // We need to extract the output for each specific test case
-          let actualForTestCase = '';
-          
-          if (currentQuestion.testCases.length === 1) {
-            // Single test case - use the entire output
-            actualForTestCase = actual;
-          } else {
-            // Multiple test cases - try to extract the specific test case output
-            // This is a simplified approach - in practice, you might need more sophisticated parsing
-            
-            // Look for the expected output pattern in the actual output
-            if (actual.includes(expected)) {
-              actualForTestCase = expected;
-            } else {
-              // If exact match not found, try to find partial matches
-              // This is a fallback for when the output format might be different
-              actualForTestCase = actual;
-            }
-          }
-          
-          const passed = actualForTestCase === expected;
+          const passed = actual === expected;
           
           console.log(`Test case ${i + 1}:`, {
             expected: expected,
-            actual: actualForTestCase,
+            actual: actual,
             passed: passed,
-            input: inputFiles[i] || 'No input available'
+            input: inputText
           });
           
           results.push({
             testCase: testCase.description,
             expected: expected,
-            actual: actualForTestCase,
+            actual: actual,
             passed: passed,
-            input: inputFiles[i] || 'No input available'
+            input: inputText
           });
+          
+          // Add to overall output
+          allOutputs.push(`Test Case ${i + 1}:\n${actual}`);
           
         } catch (error) {
           results.push({
@@ -277,13 +222,15 @@ sys.stdout = StringIO()
             actual: `Error: ${error}`,
             passed: false
           });
+          
+          allOutputs.push(`Test Case ${i + 1}: Error - ${error}`);
         }
       }
       
       setTestResults(results);
       
-      // Show overall output
-      setOutput(actual || 'No output generated');
+      // Show overall output with test case separators
+      setOutput(allOutputs.join('\n\n---\n\n') || 'No output generated');
       
     } catch (error) {
       setOutput(`Error: ${error}`);
@@ -437,10 +384,10 @@ sys.stdout = StringIO()
             <div className="p-4 space-y-2 overflow-y-auto" style={{ height: `calc(${testResultsHeight}px - 40px)` }}>
               {/* Input Format Info */}
               <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
-                <div className="text-sm font-medium text-blue-800 mb-1">📝 Input Format (Competitive Programming Style):</div>
+                <div className="text-sm font-medium text-blue-800 mb-1">📝 Learning Mode:</div>
                 <div className="text-xs text-blue-700">
-                  First line: Number of test cases<br/>
-                  Followed by: Contents of each test file
+                  Each test case runs individually<br/>
+                  You&apos;ll see exactly which test case failed and why
                 </div>
               </div>
               
