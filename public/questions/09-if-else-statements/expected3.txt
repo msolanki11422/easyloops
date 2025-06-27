@@ -1,0 +1,4 @@
+Number: 8
+Sign: positive
+Parity: even
+Classification: positive even number

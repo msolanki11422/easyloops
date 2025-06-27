@@ -1,0 +1,7 @@
+0
+Special chars: @#$%
+true
+-123.456
+!
+42
+Algorithms_and_Data_Structures 

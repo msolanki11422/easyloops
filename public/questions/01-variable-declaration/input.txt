@@ -1,0 +1,7 @@
+42
+Hello, World!
+true
+3.14159
+A
+100
+Programming 

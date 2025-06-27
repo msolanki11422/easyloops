@@ -1,0 +1,6 @@
+Integer: 2147483647
+Integer to float: 2147483647.0
+Float: 12345.6789
+Float to integer: 12345
+String: -98765
+String to integer: -98765

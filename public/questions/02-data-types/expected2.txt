@@ -1,0 +1,6 @@
+Integer: 0
+Integer to float: 0.0
+Float: -2.7
+Float to integer: -2
+String: 0
+String to integer: 0

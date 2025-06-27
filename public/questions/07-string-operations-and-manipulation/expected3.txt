@@ -1,0 +1,3 @@
+Length: 6
+Upper: GOLANG
+

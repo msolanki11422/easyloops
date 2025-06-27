@@ -1,0 +1,7 @@
+-2147483648
+A
+false
+0.0
+Z
+2147483647
+DataStructures 

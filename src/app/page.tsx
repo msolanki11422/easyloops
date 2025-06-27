@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import MonacoEditor from '@/components/MonacoEditor';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
+import { loadQuestion, getAvailableQuestions, type Question } from '@/utils/questionLoader';
 
 interface TestResult {
   testCase: string;
@@ -44,22 +46,23 @@ for t in range(T):
   const [output, setOutput] = useState('');
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [availableQuestions, setAvailableQuestions] = useState<string[]>([]);
+  const [selectedQuestionId, setSelectedQuestionId] = useState('01-variable-declaration');
   // Pyodide type is not available, so use unknown and cast as needed
   const [pyodide, setPyodide] = useState<unknown>(null);
 
-  // Test cases with input/output files
-  const testCases = [
-    {
-      inputFile: '/testcases/input1.txt',
-      expectedFile: '/testcases/expected1.txt',
-      description: 'Test Case 1: Basic examples'
-    },
-    {
-      inputFile: '/testcases/input2.txt',
-      expectedFile: '/testcases/expected2.txt',
-      description: 'Test Case 2: Additional examples'
+  useEffect(() => {
+    // Load available questions
+    getAvailableQuestions().then(setAvailableQuestions);
+  }, []);
+
+  useEffect(() => {
+    // Load the selected question
+    if (selectedQuestionId) {
+      loadQuestion(selectedQuestionId).then(setCurrentQuestion);
     }
-  ];
+  }, [selectedQuestionId]);
 
   useEffect(() => {
     // Dynamically load Pyodide from CDN
@@ -139,8 +142,8 @@ for t in range(T):
   }, [isDraggingHorizontal, isDraggingVertical]);
 
   const runCode = async () => {
-    if (!pyodide) {
-      setOutput('Pyodide is still loading...');
+    if (!pyodide || !currentQuestion) {
+      setOutput('Pyodide is still loading or no question selected...');
       return;
     }
 
@@ -151,7 +154,7 @@ for t in range(T):
       // Run test cases and capture their output
       const results: TestResult[] = [];
       
-      for (const testCase of testCases) {
+      for (const testCase of currentQuestion.testCases) {
         try {
           // Fetch input and expected files
           const [inputResponse, expectedResponse] = await Promise.all([
@@ -241,13 +244,29 @@ sys.stdout = StringIO()
             <h1 className="text-xl font-semibold text-gray-900">🧠 EasyLoops</h1>
             <span className="text-sm text-gray-500">Practice Problems</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Language:</span>
-            <select className="text-sm border border-gray-300 rounded px-2 py-1 bg-white">
-              <option>Python3</option>
-              <option>JavaScript</option>
-              <option>Java</option>
-            </select>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Question:</span>
+              <select 
+                value={selectedQuestionId}
+                onChange={(e) => setSelectedQuestionId(e.target.value)}
+                className="text-sm border border-gray-300 rounded px-2 py-1 bg-white min-w-[200px]"
+              >
+                {availableQuestions.map(id => (
+                  <option key={id} value={id}>
+                    {id.replace(/-/g, ' ').replace(/\d+-/, '').replace(/\b\w/g, l => l.toUpperCase())}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Language:</span>
+              <select className="text-sm border border-gray-300 rounded px-2 py-1 bg-white">
+                <option>Python3</option>
+                <option>JavaScript</option>
+                <option>Java</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -264,80 +283,25 @@ sys.stdout = StringIO()
           style={{ width: `${leftPaneWidth}%` }}
         >
           <div className="p-6">
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                🏷️ Problem: Two Sum
-              </h2>
-              <div className="text-sm text-gray-600 mb-4">
-                <span className="font-medium">Difficulty:</span> Easy
-              </div>
-            </div>
-
-            <div className="space-y-6">
+            {currentQuestion ? (
               <div>
-                <h3 className="text-md font-semibold text-gray-800 mb-2">
-                  💬 Description
-                </h3>
-                <div className="text-sm text-gray-700 leading-relaxed">
-                  <p className="mb-3">
-                    Given an array of integers <code className="bg-gray-100 px-1 rounded">nums</code> and an integer <code className="bg-gray-100 px-1 rounded">target</code>, 
-                    return <em>indices of the two numbers such that they add up to</em> <code className="bg-gray-100 px-1 rounded">target</code>.
-                  </p>
-                  <p className="mb-3">
-                    You may assume that each input would have <strong>exactly one solution</strong>, and you may not use the <em>same</em> element twice.
-                  </p>
-                  <p>
-                    You can return the answer in any order.
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-md font-semibold text-gray-800 mb-2">
-                  📌 Input Format
-                </h3>
-                <div className="text-sm text-gray-700 space-y-2">
-                  <p>The first line contains <code className="bg-gray-100 px-1 rounded">T</code>, the number of test cases.</p>
-                  <p>For each test case:</p>
-                  <ul className="list-disc list-inside space-y-1 ml-4">
-                    <li>First line: <code className="bg-gray-100 px-1 rounded">n target</code> (array length and target sum)</li>
-                    <li>Second line: <code className="bg-gray-100 px-1 rounded">nums[0] nums[1] ... nums[n-1]</code> (space-separated integers)</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-md font-semibold text-gray-800 mb-2">
-                  📤 Output Format
-                </h3>
-                <div className="text-sm text-gray-700 space-y-2">
-                  <p>For each test case, print one line with two space-separated integers representing the indices.</p>
-                  <p>Example: <code className="bg-gray-100 px-1 rounded">0 1</code></p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-md font-semibold text-gray-800 mb-2">
-                  🧪 Example
-                </h3>
-                <div className="space-y-3">
-                  <div className="bg-gray-50 p-3 rounded">
-                    <div className="text-sm font-medium text-gray-700 mb-2">Input:</div>
-                    <pre className="text-sm text-gray-600 bg-white p-2 rounded">3
-4 9
-2 7 11 15
-3 6
-3 2 4
-2 6
-3 3</pre>
-                    <div className="text-sm font-medium text-gray-700 mb-2 mt-3">Output:</div>
-                    <pre className="text-sm text-gray-600 bg-white p-2 rounded">0 1
-1 2
-0 1</pre>
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                    🏷️ {currentQuestion.name}
+                  </h2>
+                  <div className="text-sm text-gray-600 mb-4">
+                    <span className="font-medium">ID:</span> {currentQuestion.id}
                   </div>
                 </div>
+                <div className="prose prose-sm max-w-none">
+                  <MarkdownRenderer content={currentQuestion.description} />
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-gray-500">Loading question...</div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -363,7 +327,7 @@ sys.stdout = StringIO()
             <div className="flex items-center space-x-2">
               <button
                 onClick={runCode}
-                disabled={isRunning || !pyodide}
+                disabled={isRunning || !pyodide || !currentQuestion}
                 className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
                 {isRunning ? '⏳ Running...' : '✅ Run'}

@@ -1,0 +1,4 @@
+John Doe
+25
+1.75
+Python 

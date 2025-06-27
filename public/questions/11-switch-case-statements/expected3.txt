@@ -1,0 +1,4 @@
+First number: 6
+Operator: *
+Second number: 7
+Result: 6 * 7 = 42 

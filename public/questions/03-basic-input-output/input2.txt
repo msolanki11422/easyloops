@@ -1,0 +1,4 @@
+alice smith
+18
+1.50
+JavaScript 
