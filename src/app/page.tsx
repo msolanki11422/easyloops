@@ -20,26 +20,16 @@ export default function Home() {
   const [isDraggingVertical, setIsDraggingVertical] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const rightPaneRef = useRef<HTMLDivElement>(null);
-  const [pythonCode, setPythonCode] = useState(`# Example: Simple Learning Code
-# This code reads input and produces output for one test case
+  const [pythonCode, setPythonCode] = useState(`# Nested Loops - Right Triangle Pattern
+# Read the number of rows
+n = int(input())
 
-# Read input values
-integer_val = int(input())
-string_val = input()
-boolean_val = input()
-float_val = float(input())
-char_val = input()
-updated_int = int(input())
-late_init = input()
-
-# Process and output results
-print(f"Integer variable: {integer_val}")
-print(f"String variable: {string_val}")
-print(f"Boolean variable: {boolean_val}")
-print(f"Float variable: {float_val}")
-print(f"Character variable: {char_val}")
-print(f"Updated integer variable: {updated_int}")
-print(f"Late-initialized variable: {late_init}")`);
+# Outer loop: iterate through rows (1 to n)
+for i in range(1, n + 1):
+    # Inner loop: print stars for current row
+    for j in range(i):
+        print("*", end="")
+    print()  # Move to next line after each row`);
   const [output, setOutput] = useState('');
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [isRunning, setIsRunning] = useState(false);
