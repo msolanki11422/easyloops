@@ -76,6 +76,13 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
     }
   }, [value]);
 
+  // Resize editor when height changes
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.layout();
+    }
+  }, [height]);
+
   return <div ref={containerRef} style={{ width: '100%', height }} />;
 };
 
