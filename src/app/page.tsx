@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import MonacoEditor from '@/components/MonacoEditor';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import { loadQuestion, getAvailableQuestions, type Question } from '@/utils/questionLoader';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface TestResult {
   testCase: string;
@@ -36,8 +37,26 @@ for i in range(1, n + 1):
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [availableQuestions, setAvailableQuestions] = useState<string[]>([]);
   const [selectedQuestionId, setSelectedQuestionId] = useState('01-variable-declaration');
+  const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
   // Pyodide type is not available, so use unknown and cast as needed
   const [pyodide, setPyodide] = useState<unknown>(null);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Initialize selected question from URL or default
+  useEffect(() => {
+    const questionFromUrl = searchParams.get('q');
+    if (questionFromUrl) {
+      setSelectedQuestionId(questionFromUrl);
+    }
+  }, [searchParams]);
+
+  // Update URL when question changes
+  const handleQuestionChange = (questionId: string) => {
+    setSelectedQuestionId(questionId);
+    router.push(`/?q=${questionId}`);
+  };
 
   useEffect(() => {
     // Load available questions
@@ -47,7 +66,16 @@ for i in range(1, n + 1):
   useEffect(() => {
     // Load the selected question
     if (selectedQuestionId) {
-      loadQuestion(selectedQuestionId).then(setCurrentQuestion);
+      setIsLoadingQuestion(true);
+      loadQuestion(selectedQuestionId)
+        .then(setCurrentQuestion)
+        .catch((error) => {
+          console.error('Error loading question:', error);
+          setCurrentQuestion(null);
+        })
+        .finally(() => {
+          setIsLoadingQuestion(false);
+        });
     }
   }, [selectedQuestionId]);
 
@@ -249,14 +277,19 @@ sys.stdout = StringIO()
               <span className="text-sm text-gray-600">Question:</span>
               <select 
                 value={selectedQuestionId}
-                onChange={(e) => setSelectedQuestionId(e.target.value)}
+                onChange={(e) => handleQuestionChange(e.target.value)}
                 className="text-sm border border-gray-300 rounded px-2 py-1 bg-white min-w-[200px]"
+                disabled={availableQuestions.length === 0}
               >
-                {availableQuestions.map(id => (
-                  <option key={id} value={id}>
-                    {id.replace(/-/g, ' ').replace(/\d+-/, '').replace(/\b\w/g, l => l.toUpperCase())}
-                  </option>
-                ))}
+                {availableQuestions.length === 0 ? (
+                  <option>Loading questions...</option>
+                ) : (
+                  availableQuestions.map(id => (
+                    <option key={id} value={id}>
+                      {id.replace(/-/g, ' ').replace(/\d+-/, '').replace(/\b\w/g, l => l.toUpperCase())}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
             <div className="flex items-center space-x-2">
@@ -299,7 +332,9 @@ sys.stdout = StringIO()
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">
-                <div className="text-gray-500">Loading question...</div>
+                <div className="text-gray-500">
+                  {isLoadingQuestion ? 'Loading question...' : 'Select a question to begin'}
+                </div>
               </div>
             )}
           </div>
