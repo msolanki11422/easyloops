@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import { MONACO_CONFIG } from '@/constants';
 
 export type MonacoEditorProps = {
   value: string;
@@ -30,10 +31,10 @@ const MonacoEditor: React.FC<MonacoEditorProps> = ({
 
     if (typeof window !== 'undefined' && containerRef.current) {
       script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js';
+      script.src = MONACO_CONFIG.CDN_URL;
       script.onload = () => {
         // @ts-expect-error: Monaco loader is attached to window by CDN script
-        window.require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' } });
+        window.require.config({ paths: { vs: MONACO_CONFIG.VS_PATH } });
         // @ts-expect-error: Monaco loader is attached to window by CDN script
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         window.require(['vs/editor/editor.main'], (monaco: any) => {

@@ -1,15 +1,5 @@
-export interface Question {
-  id: string;
-  name: string;
-  description: string;
-  testCases: TestCase[];
-}
-
-export interface TestCase {
-  inputFile: string;
-  expectedFile: string;
-  description: string;
-}
+import { Question, TestCase } from "@/types";
+import { formatQuestionName } from "@/utils/formatters";
 
 export async function loadQuestion(
   questionId: string
@@ -60,10 +50,7 @@ export async function loadQuestion(
 
     return {
       id: questionId,
-      name: questionId
-        .replace(/-/g, " ")
-        .replace(/\d+-/, "")
-        .replace(/\b\w/g, (l) => l.toUpperCase()),
+      name: formatQuestionName(questionId),
       description,
       testCases,
     };
