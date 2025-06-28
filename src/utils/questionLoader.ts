@@ -14,45 +14,29 @@ export async function loadQuestion(
     }
     const description = await questionResponse.text();
 
-    // Load test cases
-    const testCases: TestCase[] = [];
-    let testCaseIndex = 1;
-
-    while (true) {
-      const inputFile =
-        testCaseIndex === 1 ? "input.txt" : `input${testCaseIndex}.txt`;
-      const expectedFile =
-        testCaseIndex === 1 ? "expected.txt" : `expected${testCaseIndex}.txt`;
-
-      try {
-        const inputResponse = await fetch(
-          `/questions/${questionId}/${inputFile}`
-        );
-        const expectedResponse = await fetch(
-          `/questions/${questionId}/${expectedFile}`
-        );
-
-        if (!inputResponse.ok || !expectedResponse.ok) {
-          break; // No more test cases
-        }
-
-        testCases.push({
-          inputFile: `/questions/${questionId}/${inputFile}`,
-          expectedFile: `/questions/${questionId}/${expectedFile}`,
-          description: `Test Case ${testCaseIndex}`,
-        });
-
-        testCaseIndex++;
-      } catch {
-        break; // No more test cases
-      }
+    // Load testcases manifest
+    const manifestResponse = await fetch(
+      `/questions/${questionId}/testcases.json`
+    );
+    if (!manifestResponse.ok) {
+      throw new Error(
+        `Failed to load testcases manifest for question: ${questionId}`
+      );
     }
+    const testCases: TestCase[] = await manifestResponse.json();
+
+    // Prepend the question folder to file paths
+    const testCasesWithPaths = testCases.map((tc) => ({
+      ...tc,
+      inputFile: `/questions/${questionId}/${tc.inputFile}`,
+      expectedFile: `/questions/${questionId}/${tc.expectedFile}`,
+    }));
 
     return {
       id: questionId,
       name: formatQuestionName(questionId),
       description,
-      testCases,
+      testCases: testCasesWithPaths,
     };
   } catch (error) {
     console.error(`Error loading question ${questionId}:`, error);

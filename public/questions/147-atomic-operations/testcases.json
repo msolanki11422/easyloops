@@ -1,0 +1,17 @@
+[
+  {
+    "inputFile": "input.txt",
+    "expectedFile": "expected.txt",
+    "description": "Test Case 1"
+  },
+  {
+    "inputFile": "input2.txt",
+    "expectedFile": "expected2.txt",
+    "description": "Test Case 2"
+  },
+  {
+    "inputFile": "input3.txt",
+    "expectedFile": "expected3.txt",
+    "description": "Test Case 3"
+  }
+]
