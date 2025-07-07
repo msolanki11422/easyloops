@@ -1,5 +1,8 @@
 name: Deployment Orchestrator
 
+permissions:
+  contents: write
+
 on:
   workflow_run:
     workflows: ['Pipeline']
@@ -18,6 +21,7 @@ on:
           - vercel
           - github-pages
           - netlify
+          - tauri
           - all
       environment:
         description: Deployment environment (deploy-config.json)
@@ -72,11 +76,11 @@ jobs:
           fi
 
           if [[ -n "$INPUT" ]]; then
-            if [[ "$INPUT" == "all" ]]; then
-              TARGETS=(firebase aws-s3 vercel github-pages netlify)
-            else
-              TARGETS=("$INPUT")
-            fi
+                      if [[ "$INPUT" == "all" ]]; then
+            TARGETS=(firebase aws-s3 vercel github-pages netlify tauri)
+          else
+            TARGETS=("$INPUT")
+          fi
           fi
 
           ############################
@@ -100,7 +104,7 @@ jobs:
           fi
 
           # Fallback to all when nothing matches
-          [[ ${#TARGETS[@]} -eq 0 ]] && TARGETS=(firebase aws-s3 vercel github-pages netlify)
+          [[ ${#TARGETS[@]} -eq 0 ]] && TARGETS=(firebase aws-s3 vercel github-pages netlify tauri)
 
           echo "targets=$(printf "%s\n" "${TARGETS[@]}" | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
 
@@ -144,6 +148,14 @@ jobs:
     if: ${{ contains(fromJson(needs.determine_target.outputs.targets), 'netlify') }}
     needs: determine_target
     uses: ./.github/workflows/deploy-netlify.yml
+    with:
+      ref: ${{ github.ref }}
+    secrets: inherit
+
+  deploy-tauri:
+    if: ${{ contains(fromJson(needs.determine_target.outputs.targets), 'tauri') }}
+    needs: determine_target
+    uses: ./.github/workflows/tauri-unified-release.yml
     with:
       ref: ${{ github.ref }}
     secrets: inherit
