@@ -22,6 +22,49 @@ export interface TestCase {
 export interface CodeExecutionResult {
   output: string;
   testResults: TestResult[];
+  executionTime?: number;
+}
+
+export interface ExecutionMode {
+  type: 'RUN' | 'SUBMIT';
+  testCaseLimit?: number;
+  createSnapshot?: boolean;
+}
+
+export interface SubmissionResult {
+  id: string;
+  success: boolean;
+  message: string;
+  timestamp: Date;
+  questionId: string;
+  language: string;
+  code: string;
+  testResults: TestResult[];
+  passedCount: number;
+  failedCount: number;
+  totalCount: number;
+  executionTime?: number;
+  overallStatus: 'PASSED' | 'PARTIAL' | 'FAILED';
+}
+
+export interface SubmissionSnapshot {
+  id: string;
+  timestamp: Date;
+  questionId: string;
+  language: string;
+  code: string;
+  testResults: TestResult[];
+}
+
+export interface SubmissionService {
+  submitCode: (
+    code: string,
+    testCases: TestCase[],
+    language: string,
+    questionId: string
+  ) => Promise<SubmissionResult>;
+  getSubmissions: (questionId?: string) => Promise<SubmissionResult[]>;
+  getSnapshots: (questionId?: string) => Promise<SubmissionSnapshot[]>;
 }
 
 export interface ResizablePaneProps {
@@ -44,6 +87,7 @@ export interface CodeEditorProps {
   language?: string;
   height?: string;
   isRunning?: boolean;
+  isSubmitting?: boolean;
   onRun: () => void;
   onSubmit: () => void;
 }
@@ -52,6 +96,7 @@ export interface TestResultsPanelProps {
   testResults: TestResult[];
   output: string;
   height?: number;
+  lastSubmission?: SubmissionResult | null;
 }
 
 export interface QuestionSelectorProps {

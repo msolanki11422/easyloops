@@ -95,7 +95,9 @@ describe('CodeExecutionService', () => {
         'python'
       );
 
-      expect(result).toEqual(mockResult);
+      expect(result.output).toBe(mockResult.output);
+      expect(result.testResults).toEqual(mockResult.testResults);
+      // executionTime is optional, so we don't need to check it
       expect(mockPyodideManager.runCode).toHaveBeenCalledWith(
         'print("Hello")',
         mockTestCases
@@ -146,7 +148,7 @@ describe('CodeExecutionService', () => {
         'c'
       );
 
-      expect(result.output).toBe('Mock Judge0 execution result');
+      expect(result.output).toBe('Sample Test Results (0/2 passed)');
     });
 
     it('should throw error for unsupported language', async () => {
@@ -257,7 +259,11 @@ describe('PyodideExecutionStrategy', () => {
 
       (mockPyodideManager.runCode as jest.Mock).mockResolvedValue(mockResult);
 
-      const result = await strategy.execute('print("test")', mockTestCases);
+      const result = await strategy.execute('print("test")', mockTestCases, {
+        type: 'RUN',
+        testCaseLimit: 2,
+        createSnapshot: false,
+      });
 
       expect(result).toEqual(mockResult);
       expect(mockPyodideManager.runCode).toHaveBeenCalledWith(
@@ -273,7 +279,11 @@ describe('PyodideExecutionStrategy', () => {
       } as PyodideManager);
 
       await expect(
-        unloadedStrategy.execute('print("test")', mockTestCases)
+        unloadedStrategy.execute('print("test")', mockTestCases, {
+          type: 'RUN',
+          testCaseLimit: 2,
+          createSnapshot: false,
+        })
       ).rejects.toThrow('Pyodide is not loaded yet');
     });
   });
@@ -335,7 +345,11 @@ describe('GoExecutionStrategy', () => {
         .mockResolvedValueOnce(mockExpectedResponse as unknown as Response)
         .mockResolvedValueOnce(mockGoResponse as unknown as Response);
 
-      const result = await strategy.execute('package main', mockTestCases);
+      const result = await strategy.execute('package main', mockTestCases, {
+        type: 'RUN',
+        testCaseLimit: 2,
+        createSnapshot: false,
+      });
 
       expect(result.output).toContain('✅ Test case 1');
       expect(mockFetch).toHaveBeenCalledWith(
@@ -368,7 +382,11 @@ describe('GoExecutionStrategy', () => {
         .mockResolvedValueOnce(mockExpectedResponse as unknown as Response)
         .mockResolvedValueOnce(mockGoResponse as unknown as Response);
 
-      const result = await strategy.execute('package main', mockTestCases);
+      const result = await strategy.execute('package main', mockTestCases, {
+        type: 'RUN',
+        testCaseLimit: 2,
+        createSnapshot: false,
+      });
 
       expect(result.output).toContain('❌ Test case 1');
     });
@@ -381,7 +399,11 @@ describe('GoExecutionStrategy', () => {
 
       mockFetch.mockResolvedValue(mockErrorResponse as unknown as Response);
 
-      const result = await strategy.execute('package main', mockTestCases);
+      const result = await strategy.execute('package main', mockTestCases, {
+        type: 'RUN',
+        testCaseLimit: 2,
+        createSnapshot: false,
+      });
 
       expect(result.output).toContain('❌ Test case 1');
       expect(result.testResults[0].actual).toContain(
@@ -393,7 +415,11 @@ describe('GoExecutionStrategy', () => {
       const unauthenticatedStrategy = new GoExecutionStrategy(null);
 
       await expect(
-        unauthenticatedStrategy.execute('package main', mockTestCases)
+        unauthenticatedStrategy.execute('package main', mockTestCases, {
+          type: 'RUN',
+          testCaseLimit: 2,
+          createSnapshot: false,
+        })
       ).rejects.toThrow('Authentication required for Go code execution');
     });
   });
@@ -433,10 +459,11 @@ describe('Judge0ExecutionStrategy', () => {
     it('should return mock result', async () => {
       const result = await strategy.execute(
         '#include <stdio.h>',
-        mockTestCases
+        mockTestCases,
+        { type: 'RUN', testCaseLimit: 2, createSnapshot: false }
       );
 
-      expect(result.output).toBe('Mock Judge0 execution result');
+      expect(result.output).toBe('Sample Test Results (0/2 passed)');
       expect(result.testResults).toHaveLength(2);
       expect(result.testResults[0].passed).toBe(false);
     });
@@ -449,7 +476,11 @@ describe('Judge0ExecutionStrategy', () => {
       );
 
       await expect(
-        unauthenticatedStrategy.execute('#include <stdio.h>', mockTestCases)
+        unauthenticatedStrategy.execute('#include <stdio.h>', mockTestCases, {
+          type: 'RUN',
+          testCaseLimit: 2,
+          createSnapshot: false,
+        })
       ).rejects.toThrow('Authentication required for code execution');
     });
   });
