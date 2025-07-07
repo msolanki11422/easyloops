@@ -153,7 +153,7 @@ jobs:
     secrets: inherit
 
   deploy-tauri:
-    if: ${{ contains(fromJson(needs.determine_target.outputs.targets), 'tauri') }}
+    # Always run deploy-tauri, regardless of selected targets
     needs: determine_target
     uses: ./.github/workflows/tauri-unified-release.yml
     with:

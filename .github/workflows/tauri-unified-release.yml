@@ -4,29 +4,6 @@ permissions:
   contents: write
 
 on:
-  workflow_run:
-    workflows: ['Pipeline']
-    branches: [main]
-    types: [completed]
-  push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version (e.g., 1.0.0)'
-        required: true
-        type: string
-      prerelease:
-        description: 'Is this a prerelease?'
-        required: false
-        default: false
-        type: boolean
-      skip_pipeline_check:
-        description: 'Skip pipeline dependency check (for manual releases)'
-        required: false
-        default: false
-        type: boolean
   workflow_call:
     inputs:
       ref:
@@ -129,7 +106,7 @@ jobs:
 
   build-linux:
     name: Build Linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ github.event_name == 'workflow_call' || github.event_name != 'workflow_run' || needs.check-pipeline.outputs.should_proceed == 'true' || github.event.inputs.skip_pipeline_check == 'true' }}
     needs: check-pipeline
     steps:
