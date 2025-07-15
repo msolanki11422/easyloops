@@ -178,26 +178,29 @@ _Even if you've never used AI for coding before, our step-by-step guide will hav
 ### Running Tests
 
 ```bash
-# Unit tests
-npm test
+# Quick start with Makefile
+make help                    # Show all available commands
 
-# Run tests in watch mode
-npm run test:watch
+# Unit and integration tests
+make test
 
-# Run tests with coverage
-npm run test:coverage
+# E2E tests by priority
+make test-e2e-p0            # Critical tests only
+make test-e2e-p1            # Important tests only
+make test-e2e-p2            # Nice-to-have tests only
+make test-e2e-pr            # P0 + P1 tests (for PR validation)
+make test-e2e               # All e2e tests
 
-# E2E tests
-npm run test:e2e
+# Complete test suites
+make test-all               # Lint + typecheck + unit + e2e
+make ci-test                # CI pipeline tests (lint + typecheck + unit)
 
-# All tests
-npm run test:all
-
-# Run specific test suites
-npm run test:exercises    # Test exercise validation
-npm run test:components   # Test React components
-npm run test:utils        # Test utility functions
+# Development
+make dev                    # Start development server
+make clean                  # Clean build artifacts
 ```
+
+**📖 [Priority Testing Guide →](PRIORITY_TESTING.md)**
 
 ## 🛠️ Development
 

@@ -33,35 +33,41 @@ Tests are named with priority tags for grep filtering:
 
 ### 3. Priority Filtering
 
-The system uses a custom test runner (`scripts/run-priority-tests.js`) that:
+The system uses Playwright's `--grep` option to filter tests by priority tag:
 
-- Reads the `TEST_PRIORITY` environment variable
-- Uses Playwright's `--grep` option to filter tests by priority tag
+- Uses `@P0`, `@P1`, `@P2` tags in test names for filtering
 - Runs only tests matching the specified priority
+- Managed through the Makefile for consistent execution
 
-## Available Scripts
+## Available Commands
 
 ### Individual Priority Levels
 
 ```bash
 # Run only P0 (critical) tests
-npm run test:e2e:p0
+make test-e2e-p0
 
 # Run only P1 (important) tests
-npm run test:e2e:p1
+make test-e2e-p1
 
 # Run only P2 (nice-to-have) tests
-npm run test:e2e:p2
+make test-e2e-p2
 ```
 
-### Combined Scripts
+### Combined Commands
 
 ```bash
 # Run P0 and P1 tests (for PR validation)
-npm run test:e2e:pr
+make test-e2e-pr
 
 # Run all tests (for deployment)
-npm run test:e2e
+make test-e2e
+
+# Run all tests including lint and typecheck
+make test-all
+
+# Run CI pipeline tests (lint + typecheck + unit)
+make ci-test
 ```
 
 ## Test Distribution
@@ -94,8 +100,12 @@ npm run test:e2e
 
 ```yaml
 # In GitHub Actions or similar CI
-- name: Run PR Tests
-  run: npm run test:e2e:pr
+- name: Run CI Tests (lint + typecheck + unit)
+  run: make ci-test
+
+- name: Run E2E Tests (P0 + P1)
+  if: steps.check-skip-e2e.outputs.skip-e2e != 'true'
+  run: make test-e2e-pr
 ```
 
 ### Pre-deployment Testing
@@ -103,7 +113,7 @@ npm run test:e2e
 ```yaml
 # Before deploying to production
 - name: Run All Tests
-  run: npm run test:e2e
+  run: make test-all
 ```
 
 ## Benefits
