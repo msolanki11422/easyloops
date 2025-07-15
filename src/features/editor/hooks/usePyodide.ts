@@ -4,6 +4,7 @@ import {
   TestCase,
   CodeExecutionResult,
   TestResult,
+  ExecutionMode,
 } from '@/shared/types';
 import { PYODIDE_CONFIG } from '@/shared/constants';
 import { normalizeOutput } from '@/shared/lib';
@@ -76,17 +77,28 @@ export const usePyodide = (): PyodideManager => {
 
   const runCode = async (
     code: string,
-    testCases: TestCase[]
+    testCases: TestCase[],
+    mode: ExecutionMode = {
+      type: 'RUN',
+      testCaseLimit: 2,
+      createSnapshot: false,
+    }
   ): Promise<CodeExecutionResult> => {
     if (!pyodide || !isLoaded) {
       throw new Error('Pyodide is not loaded');
     }
 
+    // Apply test case limit for RUN mode
+    const casesToRun =
+      mode.type === 'RUN' && mode.testCaseLimit
+        ? testCases.slice(0, mode.testCaseLimit)
+        : testCases;
+
     const results: TestResult[] = [];
     const allOutputs: string[] = [];
 
-    for (let i = 0; i < testCases.length; i++) {
-      const testCase = testCases[i];
+    for (let i = 0; i < casesToRun.length; i++) {
+      const testCase = casesToRun[i];
       try {
         // Fetch input and expected files for this test case
         const [inputResponse, expectedResponse] = await Promise.all([
@@ -157,10 +169,35 @@ sys.stdout = StringIO()
       }
     }
 
+    // Format output consistently with other execution strategies
+    const formattedOutput = formatOutput(results, mode);
+
     return {
-      output: allOutputs.join('\n\n---\n\n') || 'No output generated',
+      output: formattedOutput,
       testResults: results,
     };
+  };
+
+  const formatOutput = (
+    testResults: TestResult[],
+    mode: ExecutionMode
+  ): string => {
+    if (testResults.length === 0) {
+      return 'No test cases executed';
+    }
+
+    const passedCount = testResults.filter((r) => r.passed).length;
+    const totalCount = testResults.length;
+
+    const statusLines = testResults.map((r) =>
+      r.passed ? `✅ ${r.testCase}` : `❌ ${r.testCase}`
+    );
+
+    if (mode.type === 'RUN') {
+      return `Sample Test Results (${passedCount}/${totalCount} passed):\n${statusLines.join('\n')}`;
+    } else {
+      return `Full Evaluation Results (${passedCount}/${totalCount} passed):\n${statusLines.join('\n')}`;
+    }
   };
 
   return {

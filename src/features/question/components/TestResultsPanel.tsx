@@ -4,6 +4,7 @@ import { TestResultsPanelProps } from '@/shared/types';
 const TestResultsPanel: React.FC<TestResultsPanelProps> = ({
   testResults,
   output,
+  lastSubmission,
 }) => {
   const [activeTab, setActiveTab] = useState<'output' | number>('output');
 
@@ -44,6 +45,29 @@ const TestResultsPanel: React.FC<TestResultsPanelProps> = ({
             </button>
           ))}
         </div>
+
+        {/* Last Submission Badge */}
+        {lastSubmission && (
+          <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900 border-t border-blue-200 dark:border-blue-700">
+            <div className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-200">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="font-medium">Last submission:</span>
+              <span>
+                {lastSubmission.passedCount}/{lastSubmission.totalCount} passed
+                ({lastSubmission.overallStatus})
+              </span>
+              <span className="text-xs opacity-75">
+                {new Date(lastSubmission.timestamp).toLocaleTimeString()}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tab Content */}

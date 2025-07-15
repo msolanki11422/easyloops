@@ -46,9 +46,10 @@ export async function loadQuestion(
 
 export async function getAvailableQuestions(): Promise<string[]> {
   try {
+    console.log('Getting available questions...');
     // Dynamically fetch the list of question directories from the public/questions folder
     // This is a static export, so we need to hardcode the list at build time
-    return [
+    const questions = [
       '01-variable-declaration',
       '02-data-types',
       '02-data-types-conversion',
@@ -255,8 +256,13 @@ export async function getAvailableQuestions(): Promise<string[]> {
       '199-microservices-patterns',
       '200-distributed-systems-patterns',
     ];
+
+    console.log(`Successfully loaded ${questions.length} questions`);
+    return questions;
   } catch (error) {
     console.error('Error getting available questions:', error);
-    return [];
+    throw new Error(
+      `Failed to load available questions: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }

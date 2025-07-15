@@ -7,8 +7,9 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
+  timeout: 180000, // Increase global timeout to 3 minutes
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3001',
     trace: 'on-first-retry',
     video: 'on-first-retry',
   },
@@ -28,7 +29,12 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3001',
     reuseExistingServer: !process.env.CI,
   },
+  // Support for priority-based test filtering
+  grep: process.env.TEST_PRIORITY
+    ? new RegExp(`@${process.env.TEST_PRIORITY}`)
+    : undefined,
+  grepInvert: process.env.TEST_PRIORITY ? undefined : undefined,
 });

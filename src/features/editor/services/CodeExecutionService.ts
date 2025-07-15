@@ -33,12 +33,7 @@ export class PyodideExecutionStrategy implements ExecutionStrategy {
       );
     }
 
-    // Apply test case limit for RUN mode
-    const casesToRun = mode.type === 'RUN' && mode.testCaseLimit
-      ? testCases.slice(0, mode.testCaseLimit)
-      : testCases;
-
-    return await this.pyodideManager.runCode(code, casesToRun);
+    return await this.pyodideManager.runCode(code, testCases, mode);
   }
 
   isAvailable(): boolean {
@@ -63,9 +58,10 @@ export class GoExecutionStrategy implements ExecutionStrategy {
     }
 
     // Apply test case limit for RUN mode
-    const casesToRun = mode.type === 'RUN' && mode.testCaseLimit
-      ? testCases.slice(0, mode.testCaseLimit)
-      : testCases;
+    const casesToRun =
+      mode.type === 'RUN' && mode.testCaseLimit
+        ? testCases.slice(0, mode.testCaseLimit)
+        : testCases;
 
     const testResults: TestResult[] = [];
     const allOutputs: string[] = [];
@@ -128,10 +124,10 @@ export class GoExecutionStrategy implements ExecutionStrategy {
       return 'No test cases executed';
     }
 
-    const passedCount = testResults.filter(r => r.passed).length;
+    const passedCount = testResults.filter((r) => r.passed).length;
     const totalCount = testResults.length;
-    
-    const statusLines = testResults.map(r => 
+
+    const statusLines = testResults.map((r) =>
       r.passed ? `✅ ${r.testCase}` : `❌ ${r.testCase}`
     );
 
@@ -200,9 +196,10 @@ export class Judge0ExecutionStrategy implements ExecutionStrategy {
     }
 
     // Apply test case limit for RUN mode
-    const casesToRun = mode.type === 'RUN' && mode.testCaseLimit
-      ? testCases.slice(0, mode.testCaseLimit)
-      : testCases;
+    const casesToRun =
+      mode.type === 'RUN' && mode.testCaseLimit
+        ? testCases.slice(0, mode.testCaseLimit)
+        : testCases;
 
     const testResults = casesToRun.map((testCase) => ({
       testCase: testCase.description,
@@ -212,12 +209,13 @@ export class Judge0ExecutionStrategy implements ExecutionStrategy {
       input: testCase.inputFile,
     }));
 
-    const passedCount = testResults.filter(r => r.passed).length;
+    const passedCount = testResults.filter((r) => r.passed).length;
     const totalCount = testResults.length;
-    
-    const output = mode.type === 'RUN' 
-      ? `Sample Test Results (${passedCount}/${totalCount} passed)`
-      : `Full Evaluation Results (${passedCount}/${totalCount} passed)`;
+
+    const output =
+      mode.type === 'RUN'
+        ? `Sample Test Results (${passedCount}/${totalCount} passed)`
+        : `Full Evaluation Results (${passedCount}/${totalCount} passed)`;
 
     return {
       output,
@@ -267,7 +265,11 @@ export class CodeExecutionService {
     code: string,
     testCases: TestCase[],
     language: string,
-    mode: ExecutionMode = { type: 'RUN', testCaseLimit: 2, createSnapshot: false }
+    mode: ExecutionMode = {
+      type: 'RUN',
+      testCaseLimit: 2,
+      createSnapshot: false,
+    }
   ): Promise<CodeExecutionResult> {
     const strategy = this.strategies.get(language);
 
@@ -296,7 +298,7 @@ export class CodeExecutionService {
     questionId: string
   ): Promise<{ result: CodeExecutionResult; submission: SubmissionResult }> {
     const mode: ExecutionMode = { type: 'SUBMIT', createSnapshot: true };
-    
+
     const startTime = Date.now();
     const result = await this.executeCode(code, testCases, language, mode);
     const executionTime = Date.now() - startTime;

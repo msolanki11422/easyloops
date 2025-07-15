@@ -20,6 +20,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
+    "test:e2e:p0": "TEST_PRIORITY=P0 node scripts/run-priority-tests.js",
+    "test:e2e:p1": "TEST_PRIORITY=P1 node scripts/run-priority-tests.js",
+    "test:e2e:p2": "TEST_PRIORITY=P2 node scripts/run-priority-tests.js",
+    "test:e2e:pr": "npm run test:e2e:p0 && npm run test:e2e:p1",
     "test:ci": "./scripts/run-unit-tests.sh",
     "test:all": "npm run lint && npm run typecheck && npm test && npm run test:e2e",
     "# Build scripts": "",
@@ -41,7 +45,8 @@
     "# Git hooks": "",
     "prepare": "husky",
     "check-node": "./scripts/check-node-version.sh",
-    "test:github-actions": "./scripts/simulate-github-actions.sh"
+    "test:github-actions": "./scripts/simulate-github-actions.sh",
+    "mcp:start": "node scripts/start-mcp-server.js"
   },
   "dependencies": {
     "error-stack-parser": "^2.1.4",
@@ -64,6 +69,7 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/eslintrc": "^3",
     "@next/bundle-analyzer": "^15.3.3",
+    "@playwright/mcp": "^0.0.30",
     "@playwright/test": "^1.52.0",
     "@tauri-apps/cli": "^2.6.2",
     "@testing-library/jest-dom": "^6.6.3",

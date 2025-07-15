@@ -100,7 +100,8 @@ describe('CodeExecutionService', () => {
       // executionTime is optional, so we don't need to check it
       expect(mockPyodideManager.runCode).toHaveBeenCalledWith(
         'print("Hello")',
-        mockTestCases
+        mockTestCases,
+        expect.objectContaining({ type: 'RUN' })
       );
     });
 
@@ -268,7 +269,8 @@ describe('PyodideExecutionStrategy', () => {
       expect(result).toEqual(mockResult);
       expect(mockPyodideManager.runCode).toHaveBeenCalledWith(
         'print("test")',
-        mockTestCases
+        mockTestCases,
+        expect.objectContaining({ type: 'RUN' })
       );
     });
 

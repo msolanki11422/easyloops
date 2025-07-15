@@ -117,7 +117,8 @@ export interface PyodideManager {
   loadingError?: string | null;
   runCode: (
     code: string,
-    testCases: TestCase[]
+    testCases: TestCase[],
+    mode?: ExecutionMode
   ) => Promise<CodeExecutionResult>;
 }
 

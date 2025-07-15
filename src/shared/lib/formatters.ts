@@ -5,8 +5,8 @@
  */
 export const formatQuestionName = (id: string): string => {
   return id
+    .replace(/^\d+-/, '') // Remove leading number and hyphen
     .replace(/-/g, ' ')
-    .replace(/\d+-/, '')
     .replace(/\b\w/g, (l) => l.toUpperCase());
 };
 

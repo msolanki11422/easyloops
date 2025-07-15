@@ -1,0 +1,43 @@
+# Cursor Rules for Easyloops Project
+
+## MCP Configuration
+
+# Connect to Playwright MCP for browser automation capabilities
+
+# This enables AI assistants to control web browsers programmatically
+
+## Project Context
+
+- This is a React/Next.js application for learning programming concepts
+- Uses Playwright for end-to-end testing
+- Has a Tauri desktop app component
+- Includes a backend with Go and Judge0 for code execution
+
+## Development Guidelines
+
+- Follow TypeScript best practices
+- Use functional components with hooks
+- Maintain consistent code formatting with Prettier
+- Write comprehensive tests for new features
+- Follow the existing project structure and naming conventions
+
+## Testing
+
+- Use Playwright for E2E testing
+- Use Jest for unit testing
+- Run `npm run test:all` to execute all tests
+- Use `npm run test:e2e:ui` for interactive Playwright testing
+
+## Code Quality
+
+- Run linting with `npm run lint`
+- Use conventional commits with commitizen
+- Follow the established folder structure in src/
+- Keep components small and focused
+- Use proper TypeScript types
+
+## Browser Automation
+
+- The Playwright MCP is available for browser automation tasks
+- Use it for testing, scraping, or automation workflows
+- Ensure proper error handling in automation scripts

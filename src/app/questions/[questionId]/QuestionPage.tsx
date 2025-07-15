@@ -7,7 +7,7 @@ import { useQuestionState } from '@/features/question';
 import { useAuth } from '@/features/auth';
 import { Header, MainLayout, RightPane, MobileUsageTip } from '@/shared';
 import { ProblemDescription } from '@/features/question';
-import { ExecutionMode } from '@/shared/types';
+import { ExecutionMode, SubmissionResult } from '@/shared/types';
 
 interface QuestionPageProps {
   questionId: string;
@@ -38,6 +38,8 @@ const QuestionPage: React.FC<QuestionPageProps> = ({ questionId }) => {
   // Force editor to update when language changes
   const [editorKey, setEditorKey] = React.useState(0);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [lastSubmission, setLastSubmission] =
+    React.useState<SubmissionResult | null>(null);
 
   // Custom language change handler
   const handleLanguageChangeWithUpdate = (language: string) => {
@@ -196,6 +198,7 @@ ${result.output}
 
       setOutput(submissionSummary);
       setTestResults(result.testResults);
+      setLastSubmission(submission);
     } catch (error) {
       console.error('❌ Submission failed:', error);
       clearTimeout(timeoutId);
@@ -251,6 +254,7 @@ ${result.output}
               testResults: appState.testResults,
               output: appState.output,
               height: layoutState.testResultsHeight,
+              lastSubmission: lastSubmission,
             }}
             onVerticalMouseDown={handleVerticalMouseDown}
           />
