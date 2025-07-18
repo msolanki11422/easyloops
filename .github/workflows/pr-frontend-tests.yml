@@ -1,0 +1,101 @@
+name: Frontend Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**/*'
+      - 'public/**/*'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'jest.config.js'
+      - 'playwright.config.ts'
+      - 'e2e/**/*'
+      - 'scripts/**/*'
+      - 'Makefile'
+      - '.eslintrc.js'
+      - '.prettierrc'
+      - 'tailwind.config.js'
+      - 'next.config.js'
+      - 'vite.config.ts'
+      - 'index.html'
+      - 'src-tauri/**/*'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**/*'
+      - 'public/**/*'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'jest.config.js'
+      - 'playwright.config.ts'
+      - 'e2e/**/*'
+      - 'scripts/**/*'
+      - 'Makefile'
+      - '.eslintrc.js'
+      - '.prettierrc'
+      - 'tailwind.config.js'
+      - 'next.config.js'
+      - 'vite.config.ts'
+      - 'index.html'
+      - 'src-tauri/**/*'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+
+jobs:
+  test-frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run type checking
+        run: npm run typecheck
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Check for skip E2E flag
+        id: check-skip-e2e
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_OUTPUT: $GITHUB_OUTPUT
+          TEST_COMMIT_MSG: '' # Let it use the real commit message in CI
+        run: ./scripts/check-skip-e2e.sh
+
+      - name: Run E2E Tests (P0 + P1)
+        if: steps.check-skip-e2e.outputs.skip-e2e != 'true'
+        run: make test-e2e-pr
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
