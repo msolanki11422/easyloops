@@ -1,21 +1,27 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import ThemeProvider from "@/shared/components/ThemeProvider";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono, Comfortaa } from 'next/font/google';
+import './globals.css';
+import ThemeProvider from '@/shared/components/ThemeProvider';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
+
+const comfortaa = Comfortaa({
+  variable: '--font-comfortaa',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "EasyLoops - Learn Programming",
-  description: "Interactive coding challenges designed to build your programming skills systematically.",
+  title: 'EasyLoops - Learn Programming',
+  description:
+    'Interactive coding challenges designed to build your programming skills systematically.',
 };
 
 export default function RootLayout({
@@ -26,11 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${comfortaa.variable} antialiased`}
       >
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

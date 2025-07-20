@@ -8,3 +8,4 @@ export { default as SimpleHeader } from './SimpleHeader';
 export { default as ClientHeader } from './ClientHeader';
 export { default as DebugPanel } from './DebugPanel';
 export { default as MobileUsageTip } from './MobileUsageTip';
+export { default as Logo } from './Logo';

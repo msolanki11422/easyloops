@@ -24,7 +24,7 @@ test.describe('Home Page', () => {
     await page.goto('/');
 
     // Check main heading and branding
-    await expect(page.getByText('🧠 EasyLoops')).toBeVisible();
+    await expect(page.getByText('EasyLoops')).toBeVisible();
     await expect(page.getByText('Master Programming')).toBeVisible();
     // Target the specific heading that contains "One Problem at a Time"
     await expect(

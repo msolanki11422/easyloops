@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { LanguageSelector, AuthButton } from '@/features/auth';
 import ThemeToggle from '@/shared/components/ThemeToggle';
+import { Logo } from '@/shared/components';
 
 interface SimpleHeaderProps {
   selectedLanguage?: string;
@@ -21,11 +22,8 @@ const SimpleHeader: React.FC<SimpleHeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-6">
           <div className="flex items-center">
-            <Link
-              href="/"
-              className="text-2xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
-              🧠 EasyLoops
+            <Link href="/" className="hover:opacity-80 transition-opacity">
+              <Logo size="lg" />
             </Link>
           </div>
           <div className="flex items-center space-x-4">

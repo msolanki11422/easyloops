@@ -3,6 +3,7 @@ import { QuestionSelectorProps } from '@/shared/types';
 import { QuestionSelector } from '@/features/question';
 import { LanguageSelector, AuthButton } from '@/features/auth';
 import ThemeToggle from '@/shared/components/ThemeToggle';
+import { Logo } from '@/shared/components';
 
 interface HeaderProps extends QuestionSelectorProps {
   selectedLanguage: string;
@@ -19,9 +20,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-col space-y-3 md:space-y-0 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between md:justify-start md:space-x-4">
           <div className="flex items-center space-x-2 md:space-x-4">
-            <h1 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
-              🧠 EasyLoops
-            </h1>
+            <Logo size="md" />
             <span className="hidden sm:inline text-sm text-gray-500 dark:text-gray-400">
               Practice Problems
             </span>

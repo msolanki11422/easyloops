@@ -7,7 +7,7 @@ test.describe('Submission Flow E2E', () => {
     await page.goto('/questions/01-variable-declaration');
 
     // Wait for the app to load - look for the EasyLoops header
-    await page.waitForSelector('h1:has-text("🧠 EasyLoops")');
+    await page.waitForSelector('h1:has-text("EasyLoops")');
 
     // Clear all persistent state after page loads
     await clearPersistentState(page);
@@ -365,7 +365,7 @@ test.describe('Submission Flow Edge Cases', () => {
     test.info().annotations.push({ type: 'priority', description: 'P2' });
 
     await page.goto('/questions/01-variable-declaration');
-    await page.waitForSelector('h1:has-text("🧠 EasyLoops")');
+    await page.waitForSelector('h1:has-text("EasyLoops")');
 
     // Wait for the editor to load
     await page.waitForSelector('span:has-text("💻 Code Editor")');
@@ -396,7 +396,7 @@ test.describe('Submission Flow Edge Cases', () => {
     test.info().annotations.push({ type: 'priority', description: 'P2' });
 
     await page.goto('/questions/01-variable-declaration');
-    await page.waitForSelector('h1:has-text("🧠 EasyLoops")');
+    await page.waitForSelector('h1:has-text("EasyLoops")');
 
     // Wait for the editor to load
     await page.waitForSelector('span:has-text("💻 Code Editor")');

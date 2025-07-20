@@ -50,7 +50,7 @@ test.describe('Navigation', () => {
     test.info().annotations.push({ type: 'priority', description: 'P0' });
 
     await page.goto('/questions/');
-    await page.getByRole('link', { name: '🧠 EasyLoops' }).click();
+    await page.getByRole('link', { name: 'EasyLoops' }).click();
     await expect(page).toHaveURL('/');
   });
 });

@@ -16,7 +16,14 @@ module.exports = {
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'Arial', 'Helvetica', 'sans-serif'],
-        mono: ['var(--font-geist-mono)', 'Monaco', 'Menlo', 'Ubuntu Mono', 'monospace'],
+        mono: [
+          'var(--font-geist-mono)',
+          'Monaco',
+          'Menlo',
+          'Ubuntu Mono',
+          'monospace',
+        ],
+        comfortaa: ['var(--font-comfortaa)', 'Comfortaa', 'cursive'],
       },
     },
   },
