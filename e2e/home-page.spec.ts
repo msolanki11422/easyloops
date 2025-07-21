@@ -24,7 +24,7 @@ test.describe('Home Page', () => {
     await page.goto('/');
 
     // Check main heading and branding
-    await expect(page.getByText('EasyLoops')).toBeVisible();
+    await expect(page.getByText('easyloops')).toBeVisible();
     await expect(page.getByText('Master Programming')).toBeVisible();
     // Target the specific heading that contains "One Problem at a Time"
     await expect(
@@ -110,7 +110,7 @@ test.describe('Home Page', () => {
     // Check footer content
     await expect(
       page.getByText(
-        '© 2024 EasyLoops. Learn programming, one problem at a time.'
+        '© 2024 easyloops. Learn programming, one problem at a time.'
       )
     ).toBeVisible();
   });

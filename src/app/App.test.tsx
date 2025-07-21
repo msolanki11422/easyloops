@@ -26,7 +26,7 @@ jest.mock('@/shared', () => ({
     onLanguageChange: (lang: string) => void;
   }) => (
     <div data-testid="header">
-      <h1>EasyLoops</h1>
+      <h1>easyloops</h1>
       <span>Practice Problems</span>
       <select
         data-testid="language-selector"
@@ -219,7 +219,7 @@ describe('App', () => {
     render(<App />);
 
     expect(screen.getByTestId('header')).toBeInTheDocument();
-    expect(screen.getByText('EasyLoops')).toBeInTheDocument();
+    expect(screen.getByText('easyloops')).toBeInTheDocument();
     expect(screen.getByText('Practice Problems')).toBeInTheDocument();
   });
 

@@ -130,14 +130,22 @@ export default function Home() {
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             Join thousands of learners who have improved their coding skills
-            with EasyLoops.
+            with easyloops.
           </p>
-          <Link
-            href={`/questions/${DEFAULT_QUESTION_ID}`}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors duration-200"
-          >
-            Begin with Your First Problem
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href={`/questions/${DEFAULT_QUESTION_ID}`}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors duration-200"
+            >
+              Begin with Your First Problem
+            </Link>
+            <Link
+              href="/help"
+              className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 font-semibold py-3 px-8 rounded-lg text-lg border-2 border-blue-600 dark:border-blue-400 transition-colors duration-200"
+            >
+              How You Can Help
+            </Link>
+          </div>
         </div>
       </main>
 
@@ -146,7 +154,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-600 dark:text-gray-300">
             <p>
-              &copy; 2024 EasyLoops. Learn programming, one problem at a time.
+              &copy; 2024 easyloops. Learn programming, one problem at a time.
             </p>
           </div>
         </div>

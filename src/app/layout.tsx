@@ -19,7 +19,7 @@ const comfortaa = Comfortaa({
 });
 
 export const metadata: Metadata = {
-  title: 'EasyLoops - Learn Programming',
+  title: 'easyloops - Learn Programming',
   description:
     'Interactive coding challenges designed to build your programming skills systematically.',
 };

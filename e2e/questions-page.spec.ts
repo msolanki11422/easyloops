@@ -32,7 +32,7 @@ test.describe('Questions Page', () => {
     ).toBeVisible();
 
     // Check navigation back to home
-    await expect(page.getByRole('link', { name: 'EasyLoops' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'easyloops' })).toBeVisible();
   });
 
   test('should display loading state initially', async ({ page }) => {
@@ -146,8 +146,8 @@ test.describe('Questions Page', () => {
 
     await page.goto('/questions');
 
-    // Click on the EasyLoops logo to go back home
-    await page.getByRole('link', { name: 'EasyLoops' }).click();
+    // Click on the easyloops logo to go back home
+    await page.getByRole('link', { name: 'easyloops' }).click();
     await expect(page).toHaveURL('/');
   });
 
@@ -180,7 +180,7 @@ test.describe('Questions Page', () => {
     await firstQuestionLink.click();
 
     // Wait for the question page to load by checking for the header
-    await page.waitForSelector('h1:has-text("EasyLoops")', {
+    await page.waitForSelector('h1:has-text("easyloops")', {
       timeout: 10000,
     });
 

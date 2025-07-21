@@ -24,7 +24,7 @@ test.describe('Layout and Responsive Behavior', () => {
     await page.getByRole('link', { name: 'Start Learning' }).click();
 
     // Wait for the page to load completely
-    await page.waitForSelector('h1:has-text("EasyLoops")', {
+    await page.waitForSelector('h1:has-text("easyloops")', {
       timeout: 10000,
     });
 
@@ -39,7 +39,7 @@ test.describe('Layout and Responsive Behavior', () => {
 
     // Reload the page
     await page.reload();
-    await page.waitForSelector('h1:has-text("EasyLoops")', {
+    await page.waitForSelector('h1:has-text("easyloops")', {
       timeout: 10000,
     });
 
@@ -126,7 +126,7 @@ test.describe('Layout and Responsive Behavior', () => {
     await expect(page).toHaveURL('/questions/');
 
     // Check that questions page is also responsive
-    await expect(page.getByRole('link', { name: 'EasyLoops' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'easyloops' })).toBeVisible();
   });
 
   test('should maintain responsive behavior across page transitions', async ({
@@ -145,7 +145,7 @@ test.describe('Layout and Responsive Behavior', () => {
     await firstQuestionLink.click();
 
     // Check that responsive behavior is maintained
-    await expect(page.getByText('EasyLoops')).toBeVisible();
+    await expect(page.getByText('easyloops')).toBeVisible();
   });
 
   test('should handle theme transitions smoothly', async ({ page }) => {
@@ -175,7 +175,7 @@ test.describe('Layout and Responsive Behavior', () => {
     await page.getByRole('link', { name: 'Start Learning' }).click();
 
     // Wait for the question page to load
-    await page.waitForSelector('h1:has-text("EasyLoops")', {
+    await page.waitForSelector('h1:has-text("easyloops")', {
       timeout: 10000,
     });
 
@@ -203,7 +203,7 @@ test.describe('Layout and Responsive Behavior', () => {
     await page.getByRole('link', { name: 'Start Learning' }).click();
 
     // Wait for the question page to load by checking for a reliable element
-    await page.waitForSelector('h1:has-text("EasyLoops")', {
+    await page.waitForSelector('h1:has-text("easyloops")', {
       timeout: 10000,
     });
 
@@ -211,13 +211,13 @@ test.describe('Layout and Responsive Behavior', () => {
     await page.setViewportSize({ width: 800, height: 600 });
 
     // Check that the layout still works
-    await expect(page.getByText('EasyLoops')).toBeVisible();
+    await expect(page.getByText('easyloops')).toBeVisible();
 
     // Resize again
     await page.setViewportSize({ width: 1200, height: 800 });
 
     // Check that the layout still works
-    await expect(page.getByText('EasyLoops')).toBeVisible();
+    await expect(page.getByText('easyloops')).toBeVisible();
   });
 
   test('should have proper focus management for accessibility', async ({
