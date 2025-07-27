@@ -488,4 +488,19 @@ Thank you for contributing to EasyLoops React! Your contributions help make prog
 
 ---
 
+## 📜 Contributor License Agreement (CLA)
+
+Before we can accept your code contributions, you must sign our [Contributor License Agreement (CLA)](CLA.md).
+
+The CLA ensures that you retain ownership of your contributions while granting us the necessary rights to use, distribute, and relicense your code (including for commercial use).
+
+### ✍️ How to Sign
+
+When you open your first pull request, you will be prompted to sign the CLA via GitHub (powered by [CLA Assistant](https://cla-assistant.io)).
+
+You only need to sign once.
+
+> If you have already signed, future PRs will be verified automatically.
+---
+
 *This document is living and evolving. If you have suggestions for improvements, please open an issue or submit a pull request.*
