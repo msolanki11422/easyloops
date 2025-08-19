@@ -58,10 +58,12 @@ test.describe('Questions Page', () => {
     await page.goto('/questions');
 
     // Wait for questions to load
-    await page.waitForSelector('a[href^="/questions/"]', { timeout: 10000 });
+    await page.waitForSelector('main a[href^="/questions/"]', {
+      timeout: 10000,
+    });
 
     // Check that question cards are displayed
-    const questionLinks = page.locator('a[href^="/questions/"]');
+    const questionLinks = page.locator('main a[href^="/questions/"]');
     const count = await questionLinks.count();
     expect(count).toBeGreaterThan(0);
 
@@ -79,10 +81,14 @@ test.describe('Questions Page', () => {
     await page.goto('/questions');
 
     // Wait for questions to load
-    await page.waitForSelector('a[href^="/questions/"]', { timeout: 10000 });
+    await page.waitForSelector('main a[href^="/questions/"]', {
+      timeout: 10000,
+    });
 
     // Click on the first question
-    const firstQuestionLink = page.locator('a[href^="/questions/"]').first();
+    const firstQuestionLink = page
+      .locator('main a[href^="/questions/"]')
+      .first();
     const questionHref = await firstQuestionLink.getAttribute('href');
 
     await firstQuestionLink.click();
@@ -102,7 +108,9 @@ test.describe('Questions Page', () => {
     await page.goto('/questions');
 
     // Wait for questions to load
-    await page.waitForSelector('a[href^="/questions/"]', { timeout: 10000 });
+    await page.waitForSelector('main a[href^="/questions/"]', {
+      timeout: 10000,
+    });
 
     // Check that difficulty badges are present (they should be in the format of question numbers)
     const badges = page.locator('span').filter({ hasText: /\d+/ });
@@ -116,7 +124,9 @@ test.describe('Questions Page', () => {
     await page.goto('/questions');
 
     // Wait for questions to load
-    await page.waitForSelector('a[href^="/questions/"]', { timeout: 10000 });
+    await page.waitForSelector('main a[href^="/questions/"]', {
+      timeout: 10000,
+    });
 
     // Check that the grid container has responsive classes
     // Look for the grid container that contains the question cards
@@ -136,8 +146,10 @@ test.describe('Questions Page', () => {
     await expect(mainContainer).toHaveClass(/dark:bg-gray-900/);
 
     // Check that question cards have dark mode styling
-    await page.waitForSelector('a[href^="/questions/"]', { timeout: 10000 });
-    const questionCard = page.locator('a[href^="/questions/"]').first();
+    await page.waitForSelector('main a[href^="/questions/"]', {
+      timeout: 10000,
+    });
+    const questionCard = page.locator('main a[href^="/questions/"]').first();
     await expect(questionCard).toHaveClass(/dark:bg-gray-800/);
   });
 
@@ -157,10 +169,12 @@ test.describe('Questions Page', () => {
     await page.goto('/questions');
 
     // Wait for questions to load
-    await page.waitForSelector('a[href^="/questions/"]', { timeout: 10000 });
+    await page.waitForSelector('main a[href^="/questions/"]', {
+      timeout: 10000,
+    });
 
     // Check that question cards have descriptions
-    const questionCards = page.locator('a[href^="/questions/"]');
+    const questionCards = page.locator('main a[href^="/questions/"]');
     const firstCard = questionCards.first();
 
     // Check for description text pattern
@@ -175,14 +189,13 @@ test.describe('Questions Page', () => {
     test.info().annotations.push({ type: 'priority', description: 'P0' });
 
     await page.goto('/questions/');
-    await page.waitForSelector('a[href^="/questions/"]', { timeout: 10000 });
-    const firstQuestionLink = page.locator('a[href^="/questions/"]').first();
-    await firstQuestionLink.click();
-
-    // Wait for the question page to load by checking for the header
-    await page.waitForSelector('h1:has-text("easyloops")', {
+    await page.waitForSelector('main a[href^="/questions/"]', {
       timeout: 10000,
     });
+    const firstQuestionLink = page
+      .locator('main a[href^="/questions/"]')
+      .first();
+    await firstQuestionLink.click();
 
     // Verify we're on a question page
     await expect(page).toHaveURL(/\/questions\/\d+/);
