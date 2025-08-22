@@ -6,8 +6,8 @@ test.describe('Submission Flow E2E', () => {
     // Navigate to a specific question page where the code editor is available
     await page.goto('/questions/01-variable-declaration');
 
-    // Wait for the app to load - look for the easyloops header
-    await page.waitForSelector('h1:has-text("easyloops")');
+    // Wait for the app to load - look for the header link back to home
+    await page.waitForSelector('header a[href="/"]');
 
     // Clear all persistent state after page loads
     await clearPersistentState(page);
